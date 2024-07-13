@@ -28,6 +28,8 @@ const char* PARAM_CURRENT_HOUR = "currentHour";
 const char* PARAM_CURRENT_MINS = "currentMins";
 const char* PARAM_TIME_ON = "onHour";
 const char* PARAM_TIME_OFF = "offHour";
+
+const char* hostname = "andyFishTank";
 //Variables to save values from HTML form
 String ssid;
 String pass;
@@ -164,6 +166,18 @@ bool initWiFi() {
     return false;
   }
   
+ /*
+ if (!WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE, INADDR_NONE)){
+    Serial.println("STA Failed to configure");
+    return false;
+  }
+  */
+
+  if (!WiFi.setHostname(hostname )){
+    Serial.println("failed top set hostname");
+    return false;
+  }
+
   WiFi.begin(ssid.c_str(), pass.c_str());
   Serial.println("Connecting to WiFi...");
 
@@ -179,6 +193,8 @@ bool initWiFi() {
   }
 
   Serial.println(WiFi.localIP());
+  Serial.println(WiFi.getHostname());
+
   return true;
 }
 
@@ -355,6 +371,7 @@ void setup() {
   }
   
   previousMillis = 0;
+  processTime();
 }
 
 void loop() {
