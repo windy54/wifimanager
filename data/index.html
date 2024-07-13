@@ -1,0 +1,35 @@
+<!DOCTYPE HTML><html><head>
+  <title>Fish Tank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    function submitMessage() {
+      alert("Saved value to ESP LittleFS");
+      setTimeout(function(){ document.location.reload(false); }, 500);   
+    }
+  </script></head><body>
+  <form action="/get" target="hidden-form">
+    whiteBrightness (current value %whiteBrightness%): <input type="number" name="whiteBrightness">
+    <input type="submit" value="Submit" onclick="submitMessage()">
+  </form><br>
+  <form action="/get" target="hidden-form">
+    blueBrightness (current value %blueBrightness%): <input type="number " name="blueBrightness">
+    <input type="submit" value="Submit" onclick="submitMessage()">
+  </form><br>
+  <form action="/get" target="hidden-form">
+    onHour (current value %onHour%): <input type="number " name="onHour">
+    <input type="submit" value="Submit" onclick="submitMessage()">
+  </form><br>
+  <form action="/get" target="hidden-form">
+    offHour (current value %offHour%): <input type="number " name="offHour">
+    <input type="submit" value="Submit" onclick="submitMessage()">
+  </form><br>
+  <form action="/get" target="hidden-form">
+    currentHour (current value %currentHour%): <input type="number " name="currentHour">
+    <input type="submit" value="Submit" onclick="submitMessage()">
+  </form><br>
+  <form action="/get" target="hidden-form">
+    currentMins (current value %currentMins%): <input type="number " name="currentMins">
+    <input type="submit" value="Submit" onclick="submitMessage()">
+  </form><br>
+  <iframe style="display:none" name="hidden-form"></iframe>
+</body></html>
