@@ -140,11 +140,11 @@ String processor(const String& var){
     return tempdata;
   }
   else if(var == "currentHour"){
-    tempdata =  String(currentHour);
+    tempdata =  String(rtc.getHour(true));
     return tempdata;
   }
   else if(var == "currentMins"){
-    tempdata =  String(currentMins);
+    tempdata =  String(rtc.getMinute());
     return tempdata;
   }
   return String();
