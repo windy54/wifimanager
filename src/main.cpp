@@ -12,10 +12,23 @@
 #include <AsyncTCP.h>
 #include <ESP32Time.h>
 #include "LittleFS.h"
+#include <APA102.h>   // neopixel library
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
+
+// Create real time clock reference
 ESP32Time rtc(3600);
+
+// create neopixel reference on pins 13 and 12
+const uint8_t dataPin = 13;
+const uint8_t clockPin = 12;
+APA102<dataPin, clockPin> ledStrip ;
+#define LED_COUNT 24
+rgb_color colors[LED_COUNT];
+
+
+
 // Search for parameter in HTTP POST request for wifi manager
 const char* PARAM_INPUT_1 = "ssid";
 const char* PARAM_INPUT_2 = "pass";
@@ -56,17 +69,15 @@ IPAddress subnet(255, 255, 0, 0);
 
 const long wifiinterval = 10000;  // interval to wait for Wi-Fi connection (milliseconds)
 
-int whiteBrightness;
-int blueBrightness;
+uint8_t whiteBrightness;
+uint8_t blueBrightness;
 int currentHour = 0;;
 int currentMins = 0;
 int onHour;
 int offHour;
 
 int time_hour;
-// Replaces placeholder with LED
-const int blueLedpin = 12;
-const int whiteLedpin = 13;
+
 unsigned long previousMillis = 0;
 const long interval = 5 * 60 * 1000; //5 minute delay in milli-secs
 
@@ -216,13 +227,17 @@ void processTime(){
   Serial.print(" ");
   Serial.println(offHour);
     if ((onHour <= time_hour)  && (time_hour < offHour) ) {
-      digitalWrite(whiteLedpin, HIGH);
-      digitalWrite(blueLedpin, LOW);
+      for (int i=0; i<LED_COUNT; i++){
+        colors[i] = rgb_color(255, 255, 255);
+      }
       Serial.println("WHITE");
+      ledStrip.write(colors, LED_COUNT, whiteBrightness);
     }
     else{
-     digitalWrite(whiteLedpin, LOW);
-    digitalWrite(blueLedpin, HIGH); 
+    for (int i=0; i<LED_COUNT; i++){
+        colors[i] = rgb_color(255, 0, 0);
+      }
+    ledStrip.write(colors, LED_COUNT, blueBrightness);
     Serial.println("BLUE ");
     }
 }
@@ -232,9 +247,6 @@ void setup() {
   Serial.begin(115200);
 
   initLittleFS();
-
-  pinMode(blueLedpin, OUTPUT);
-  pinMode(whiteLedpin, OUTPUT);
   
   // Load values saved in LittleFS
   ssid = readFile(LittleFS, ssidPath);
@@ -245,7 +257,11 @@ void setup() {
   Serial.println(pass);
   Serial.println(ip);
   Serial.println(gateway);
-
+  for (int i=0; i<LED_COUNT; i++){
+        colors[i] = rgb_color(0, 0, 0);
+      }
+  colors[0] = rgb_color(0, 0, 255);
+  ledStrip.write(colors, LED_COUNT, whiteBrightness);
   if(initWiFi()) {
     // Route for root / web pagetime_hour
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -381,4 +397,9 @@ unsigned long currentMillis = millis();
     previousMillis = currentMillis;
     processTime();
   }
+  for (int i=0; i<LED_COUNT; i++){
+        colors[i] = rgb_color(0, 0, 0);
+      }
+  colors[0] = rgb_color(0, 0, 255);
+  ledStrip.write(colors, LED_COUNT, whiteBrightness);
 }
